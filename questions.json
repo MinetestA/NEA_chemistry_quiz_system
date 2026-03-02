@@ -52,15 +52,15 @@
     "image": null,
     "video": null
   },
-  "choices": ["NaOH 2M", "Liebig condenser", "Thermometer", "Dropper", "250ml beaker", "Safety goggles", "Conical flask", "Measuring cylinder", "HCL 2M", "Insulating cup"],
+  "choices": ["NaOH - 2 mol/dm³", "Liebig condenser", "Thermometer", "Dropper", "250 cm³ beaker", "Safety goggles", "Conical flask", "Measuring cylinder", "HCl - 2 mol/dm³", "Insulating cup"],
   "correct_indices": [0, 2, 4, 5, 7, 8, 9],
-  "explanation": "You need NaOH, HCL, a thermometer, a 250ml beaker, a conical flask, a measuring cylinder, and an insulating cup for this experiment. Watch the video for more details."
+  "explanation": "You need NaOH, HCl, a thermometer, a 250 cm³ beaker, a conical flask, a measuring cylinder, and an insulating cup for this experiment. Watch the video for more details."
 },
 {
   "id": 4,
   "type": "fill_blank",
   "prompt": "Complete the paragraph below:",
-  "text": "Use a ____ to measure the starting temperature of the acid. Record this in a table. Measure out 5ml of ____ hydroxide using a measuring cylinder. Pour this into the _______ cup. Fit the cip with a lid. Insert the thermometer through the hole so it can also be used as a stirrer. ____ the solution gently with the thermometer. Observe the temperature rise and once the temperature reading stabilises, record the _______ temperature reached. Add another 5cm^3 of _____ _____, repeat the stirring and record the temperature after stabilisation.",
+  "text": "Use a ____ to measure the starting temperature of the acid. Record this in a table. Measure out 5 cm³ of ____ hydroxide using a measuring cylinder. Pour this into the _______ cup. Fit the cup with a lid. Insert the thermometer through the hole so it can also be used as a stirrer. ____ the solution gently with the thermometer. Observe the temperature rise and once the temperature reading stabilises, record the _______ temperature reached. Add another 5cm³ of _____ _____, repeat the stirring and record the temperature after stabilisation.",
   "blanks": ["thermometer", "sodium", "insulated", "stir", "maximum", "sodium hydroxide"],
   "explanation": "If you don't remember, watch the video."
 },
