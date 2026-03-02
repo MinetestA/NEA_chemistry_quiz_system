@@ -46,6 +46,7 @@ if not st.session_state.started:
         """
         ### Instructions
         - Answer each question carefully.
+        - All of the questions in this quiz are for RP4 - Temperature Changes.
         - Some questions may include images or videos.
         - Numerical answers allow a small tolerance.
         - Your score may decrease with repeated attempts.
@@ -84,7 +85,7 @@ if st.session_state.index >= TOTAL_QUESTIONS:
 else:
     current_q = QUESTIONS[st.session_state.index]
 
-st.title("GCSE Chemistry RP Quiz")
+st.title("GCSE Chemistry RP Temperature Changes Quiz")
 
 # =========================
 # QUIZ FINISHED
