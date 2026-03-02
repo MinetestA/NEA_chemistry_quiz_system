@@ -201,10 +201,11 @@ if submitted:
         )
 
     elif current_q["type"] == "radio":
-        correct = (
-            current_q["choices"].index(user_answer)
-            == current_q["correct_index"]
-        )
+        if "answer" not in current_q:
+            st.error("Question configuration error: missing correct answer.")
+            st.stop()
+        correct = user_answer == current_q["answer"]
+    
 
     elif current_q["type"] == "checkbox":
         correct = mark_checkbox(
