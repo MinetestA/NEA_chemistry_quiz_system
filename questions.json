@@ -1,0 +1,83 @@
+[
+{
+    "id": "intro_video_q",
+    "type": "radio",
+    "prompt": "After watching the video, which statement best explains why reaction rates increase with temperature?",
+    "choices": [
+        "Particles move faster, increasing the frequency of successful collisions",
+        "Particles become heavier and collide more often",
+        "The activation energy of the reaction decreases automatically"
+    ],
+    "answer": "Particles move faster, increasing the frequency of successful collisions",
+    "media": {
+        "video": "https://www.youtube.com/watch?v=tnk3rYg-mDg"
+    },
+    "explanation": "Increasing temperature gives particles more kinetic energy, leading to more frequent and energetic collisions."
+},
+{
+    "id": 1,
+    "type": "numerical",
+    "prompt": "Calculate the concentration of the solution (mol/dm³). You have 0.5 moles of NaOH dissolved in 2 dm³ of solution.",
+    "media": {
+      "image": null,
+      "video": null
+    },
+    "answer": {
+      "value": 0.25,
+      "tolerance": 0.02
+    },
+    "explanation": "Concentration = moles divided by volume."
+  },
+  {
+    "id": 2,
+    "type": "radio",
+    "prompt": "Which statement best describes an exothermic reaction?",
+    "media": {
+      "image": null,
+      "video": null
+    },
+    "choices": [
+      "Energy is absorbed overall",
+      "Energy is released overall",
+      "No energy change occurs"
+    ],
+    "correct_index": 1,
+    "explanation": "Exothermic reactions release energy to the surroundings."
+  },
+  {
+  "id": 3,
+  "type": "checkbox",
+  "prompt": "Which of these do you need for this experiment?",
+  "media": {
+    "image": null,
+    "video": null
+  },
+  "choices": ["NaOH 2M", "Liebig condenser", "Thermometer", "Dropper", "250ml beaker", "Safety goggles", "Conical flask", "Measuring cylinder", "HCL 2M", "Insulating cup"],
+  "correct_indices": [0, 2, 4, 5, 7, 8, 9],
+  "explanation": "You need NaOH, HCL, a thermometer, a 250ml beaker, a conical flask, a measuring cylinder, and an insulating cup for this experiment. Watch the video for more details."
+},
+{
+  "id": 4,
+  "type": "fill_blank",
+  "prompt": "Complete the paragraph below:",
+  "text": "Use a ____ to measure the starting temperature of the acid. Record this in a table. Measure out 5ml of ____ hydroxide using a measuring cylinder.",
+  "blanks": ["thermometer", "sodium"],
+  "explanation": "If you don't remember, watch the video."
+},
+{
+  "id": 5,
+  "type": "graph",
+  "prompt": "Which of these graphs below would you expect to see as a record of the temperature in this RP?",
+  "media": {
+    "image": null,
+    "video": null
+  },
+  "graphs": [
+    "Media/correct_graph_question_5.png",
+    "Media/wrong_graph1_question_5.png",
+    "Media/wrong_graph2_question_5.png"
+  ],
+  "correct_index": 0,
+  "explanation": "The first graph shows a melting/boiling point graph - clearly wrong for this temperature change PAG. The third graph shows a loop de loop curve, which is also incorrect. The second graph correctly shows a temperature rise that levels off as the reaction completes and then begins to fall."
+}
+]
