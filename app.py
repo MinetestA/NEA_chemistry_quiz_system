@@ -168,12 +168,28 @@ elif current_q["type"] == "fill_blank":
         )
 
 elif current_q["type"] == "graph":
+    elif current_q["type"] == "graph":
+    st.markdown("### Choose the correct graph:")
+    graphs = current_q["graphs"]
+
+    # Labels for each graph (A, B, C, ...)
+    labels = ["A", "B", "C", "D", "E"]
+
+    # --- Display all graphs side-by-side ---
+    cols = st.columns(len(graphs))
+    for i, graph_path in enumerate(graphs):
+        with cols[i]:
+            st.image(str(BASE_DIR / graph_path), use_container_width=True)
+            st.markdown(f"**Graph {labels[i]}**")
+    st.markdown("---")
+
     user_answer = st.radio(
-        "Select the correct graph:",
-        range(len(current_q["graphs"])),
-        format_func=lambda x: f"Graph {x + 1}"
+        "Which graph is correct",
+        options=list(range(len(graphs))),
+        format_func=lambda x: f"Graph {labels[x]}"
     )
     st.image(current_q["graphs"][user_answer])
+
 
 # =========================
 # SUBMIT ANSWER
@@ -223,6 +239,7 @@ if submitted:
 
     elif current_q["type"] == "graph":
         correct = user_answer == current_q["correct_index"]
+
 
     # Store result temporarily
     st.session_state.answered = True
