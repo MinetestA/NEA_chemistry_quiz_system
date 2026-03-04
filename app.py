@@ -104,7 +104,7 @@ if current_q is None:
     # ----- Feedback breakdown table -----
     st.markdown("### Feedback Breakdown")
 
-        df = pd.DataFrame(st.session_state.results)
+    df = pd.DataFrame(st.session_state.results)
 
     # Add 1-indexed question numbers
     df.insert(0, "Question", range(1, len(df) + 1))
