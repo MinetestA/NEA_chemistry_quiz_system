@@ -218,25 +218,29 @@ if submitted:
         )
 
     elif current_q["type"] == "radio":
-        if "answer" not in current_q:
+        if "answer" not in current_q: #Defensive check
             st.error("Question configuration error: missing correct answer.")
             st.stop()
         correct = user_answer == current_q["answer"]
     
 
     elif current_q["type"] == "checkbox":
-        correct = mark_checkbox(
-            user_answers,
-            current_q["correct_indices"]
+        total_correct = mark_checkbox(
+            user_answers, # Correct variable
+            current_q["answer"],
+            tolerance=0.8
         )
+        # Store totals so feedback works
+        total = total_correct
 
+        correct = (status == "correct")
     elif current_q["type"] == "fill_blank":
         status, correct_count, total = mark_fill_blank(
             user_answers,
             current_q["blanks"]
         )
         correct = (status == "correct")
-
+    
     elif current_q["type"] == "graph":
         correct = user_answer == current_q["correct_index"]
 
@@ -247,6 +251,7 @@ if submitted:
         "correct": correct,
         "status": status,
         "correct_count": correct_count,
+        "total_correct": total_correct
         "total": total,
         "user_answer": user_answer if user_answer is not None else user_answers
     }
@@ -256,22 +261,42 @@ if submitted:
 # =========================
 
 if st.session_state.answered:
+    #Storing this in a shorter name so that lines are shorter and easier to read.
+    last_result = st.session_state.last_result 
+    
     # Feedback
     if current_q["type"] == "fill_blank":
-        if st.session_state.last_result["status"] == "correct":
+        if last_result["status"] == "correct":
             st.success("Correct ✅")
-        elif st.session_state.last_result["status"] == "partial":
+        elif last_result["status"] == "partial":
             st.warning(
-                f"Nearly correct ⚠️ ({st.session_state.last_result['correct_count']}/"
-                f"{st.session_state.last_result['total']} blanks correct)"
+                f"Nearly correct ⚠️ ({last_result['correct_count']}/"
+                f"{last_result['total']} blanks correct)"
             )
         else:
             st.error("Incorrect ❌")
-    else:
-        if st.session_state.last_result["correct"]:
-            st.success("Correct ✅")
+    
+    elif current_q["type"] == "checkbox":
+        correct_count = last_result.get("correct_count", 0)
+        total_correct = last_result.get("total_correct", 0)
+
+        if last_result["status"] == "correct":
+            st.success(f"✅ Correct! You selected all {total_correct} answers.")
+        elif last_result["status"] == "partial":
+            st.warning(
+                f"Nearly correct! ⚠️ You got {correct_count} out of {total_correct} correct."
+                )
         else:
-            st.error("Incorrect ❌")
+            st.error(
+                f"❌ Incorrect. You got {correct_count} out of {total_correct} correct."
+                )
+            
+    else:
+        #Existing feedback for other question types
+        if last_result["correct"]:
+            st.success("✅ Correct")
+        else:
+            st.error("❌ Incorrect")
 
     # Continue button
     if st.button("Continue"):
@@ -286,20 +311,29 @@ if st.session_state.answered:
 
         # Scoring
         if current_q["type"] == "fill_blank":
-            if st.session_state.last_result["status"] == "correct":
+            if last_result["status"] == "correct":
                 score = 1
-            elif st.session_state.last_result["status"] == "partial":
+            elif last_result["status"] == "partial":
                 score = 0.5
             else:
                 score = 0
+        elif current_q["type"] == "checkbox":
+            if last_result["status"] == "correct":
+                base_score = 1
+            elif last_result["status"] == "partial":
+                base_score = 0.5
+            else:
+                base_score = 0
+            score = apply_penalty(base_score, retries)
+        
         else:
             score = apply_penalty(1, retries)
 
-        # ✅ STORE RESULT BEFORE RERUN
+        # STORE RESULT BEFORE RERUN
         st.session_state.results.append({
             "question": current_q["prompt"],
-            "user_answer": st.session_state.last_result["user_answer"],
-            "correct": st.session_state.last_result["correct"],
+            "user_answer": last_result["user_answer"],
+            "correct": last_result["correct"],
             "attempts": retries + 1,
             "score": score,
             "time": time_taken,
