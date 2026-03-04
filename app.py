@@ -93,7 +93,7 @@ st.title("GCSE Chemistry RP Temperature Changes Quiz")
 if current_q is None:
     st.title("🎉 Quiz Complete")
 
-    total_score = sum(r["score"] for r in st.session_state.results_by_qid.values())
+    total_score = sum(r["score"] for r in st.session_state.results)
     percentage = (total_score / TOTAL_QUESTIONS) * 100
 
     st.write(f"Final score: **{percentage:.1f}%**")
@@ -104,21 +104,22 @@ if current_q is None:
     # ----- Feedback breakdown table -----
     st.markdown("### Feedback Breakdown")
 
-    rows = []
-    for i, q in enumerate(QUESTIONS, start=1):
-        r = st.session_state.results_by_qid.get(q["id"])
-        if r:
-            rows.append({
-                "Question": i,
-                "Question Text": r["question"],
-                "Correct": "✅" if r["correct"] else "❌",
-                "attempts": r["attempts"],
-                "score": r["score"],
-                "time": r["time"],
-            })
+        df = pd.DataFrame(st.session_state.results)
 
-    df = pd.DataFrame(rows)
-    st.dataframe(df, width="stretch", hide_index=True)
+    # Add 1-indexed question numbers
+    df.insert(0, "Question", range(1, len(df) + 1))
+
+    # Friendly display correctness values
+    df["Correct"] = df["correct"].map({True: "✅", False: "❌"})
+
+    # Rename question column properly
+    df = df.rename(columns={"question": "Question Text"})
+
+    # Select and order columns for display
+    df = df[["Question", "Question Text", "Correct", "attempts", "score", "time"]]
+
+    # Display without Pandas' 0-indexed row labels
+    st.dataframe(df, width='stretch', hide_index=True)
 
     st.markdown(
         """
@@ -136,32 +137,6 @@ if current_q is None:
 if st.session_state.start_time is None:
     st.session_state.start_time = time.time()
 
-# -------------------------
-# Back button + review mode
-# -------------------------
-qid = current_q["id"]
-
-# Back button (changes now allowed!)
-with st.container():
-    if st.session_state.index > 0:
-        if st.button("⬅ Back (Answer again)"):
-            target_index = st.session_state.index - 1
-
-            # Remove stored results from the target question onwards
-            for i in range(target_index, TOTAL_QUESTIONS):
-                qid_i = QUESTIONS[i]["id"]
-                st.session_state.results_by_qid.pop(qid_i, None)
-
-            # Roll back progress so user can't look ahead
-            st.session_state.index = target_index
-            st.session_state.current_qid = None
-
-            # Reset per-question UI state
-            st.session_state.start_time = time.time()
-            st.session_state.answered = False
-            st.session_state.last_result = None
-            st.session_state.advance_question = False
-            st.rerun()
 
 st.subheader(f"Question {st.session_state.index + 1} of {TOTAL_QUESTIONS}")
 st.write(current_q["prompt"])
@@ -231,6 +206,7 @@ elif current_q["type"] == "graph":
 submitted = st.button("Submit")
 
 if submitted:
+    qid = current_q["id"]
     st.session_state.current_qid = qid # Storing the qid safely
 
     st.session_state.attempts.setdefault(qid, 0)
@@ -391,7 +367,7 @@ if st.session_state.answered:
             score = apply_penalty(base_score, retries)
 
         # STORE RESULT BEFORE RERUN
-        st.session_state.results_by_qid[qid] = {
+        st.session_state.results.append({
             "question": current_q["prompt"],
             "user_answer": last_result["user_answer"],
             "correct": last_result["correct"],
@@ -399,7 +375,7 @@ if st.session_state.answered:
             "score": score,
             "time": time_taken,
             "explanation": current_q["explanation"]
-        }
+        })
 
         # Advance question safely
         st.session_state.advance_question = True
