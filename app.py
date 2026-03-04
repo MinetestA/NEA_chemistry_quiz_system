@@ -119,8 +119,15 @@ if current_q is None:
     df = df[["Question", "Question Text", "Correct", "attempts", "score", "time"]]
 
     # Display without Pandas' 0-indexed row labels
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width='stretch', hide_index=True) #Update use_container_width to the new non-deprecated name
 
+    st.markdown(
+        """
+        ###### Notes
+        - To see the full question text, select a question then click on it agian.
+        - Use the scroll bar on the table to see the score and time taken. 
+        """
+    )
     st.stop()
 
 # =========================
@@ -155,9 +162,9 @@ elif current_q["type"] == "radio":
 
 elif current_q["type"] == "checkbox":
     user_answers = []
-    for i, choice in enumerate(current_q["choices"]):
+    for choice in current_q["choices"]:
         if st.checkbox(choice):
-            user_answers.append(i)
+            user_answers.append(choice) # Store text answer instead of index
 
 elif current_q["type"] == "fill_blank":
     user_answers = []
@@ -179,7 +186,7 @@ elif current_q["type"] == "graph":
     cols = st.columns(len(graphs))
     for i, graph_path in enumerate(graphs):
         with cols[i]:
-            st.image(str(BASE_DIR / graph_path), use_container_width=True)
+            st.image(str(BASE_DIR / graph_path), width='stretch')
             st.markdown(f"**Graph {labels[i]}**")
     st.markdown("---")
 
@@ -188,7 +195,7 @@ elif current_q["type"] == "graph":
         options=list(range(len(graphs))),
         format_func=lambda x: f"Graph {labels[x]}"
     )
-    st.image(current_q["graphs"][user_answer])
+    #st.image(current_q["graphs"][user_answer]) #Can be added if users want this back.
 
 
 # =========================
@@ -204,31 +211,45 @@ if submitted:
     st.session_state.attempts.setdefault(qid, 0)
     st.session_state.attempts[qid] += 1
 
-    correct = False
-    status = None
-    correct_count = None
-    total = None
+    # -----------------------------
+    # Default values (always defined)
+    # -----------------------------
 
+    correct = False
+    atatus = "incorrect"
+    correct_count = 0
+    total = 0
+    total_correct = 0 
+    over_selected = False
+    max_selections = None
+
+    # -----------------------------
     # Marking logic
+    # -----------------------------
     if current_q["type"] == "numerical":
         correct = tolerance_mark(
             user_answer,
             current_q["answer"]["value"],
             current_q["answer"]["tolerance"]
         )
+        status = "correct" if correct else "incorrect"
 
     elif current_q["type"] == "radio":
-        if "answer" not in current_q: #Defensive check
+        if "answer" not in current_q: # Defensive check
             st.error("Question configuration error: missing correct answer.")
             st.stop()
-        correct = user_answer == current_q["answer"]
-    
+            
+        orrect = (user_answer == current_q["answer"])
+        status = "correct" if correct else "incorrect"
 
     elif current_q["type"] == "checkbox":
-        total_correct = mark_checkbox(
+        max_sel = current_q.get("max_selections", None)
+
+        status, correct_count, total_correct, over_selected, max_selections = mark_checkbox(
             user_answers, # Correct variable
             current_q["answer"],
-            tolerance=0.8
+            tolerance=0.8,
+            max_selections = max_sel
         )
         # Store totals so feedback works
         total = total_correct
@@ -242,16 +263,20 @@ if submitted:
         correct = (status == "correct")
     
     elif current_q["type"] == "graph":
-        correct = user_answer == current_q["correct_index"]
+        correct = (user_answer == current_q["correct_index"])
+        status = "correct" if correct else "incorrect"
 
-
-    # Store result temporarily
+    # -----------------------------
+    # Store result ONCE (unified)
+    # -----------------------------
     st.session_state.answered = True
     st.session_state.last_result = {
         "correct": correct,
         "status": status,
         "correct_count": correct_count,
-        "total_correct": total_correct
+        "total_correct": total_correct,
+        "over_selected": over_selected,
+        "max_selections": max_selections,
         "total": total,
         "user_answer": user_answer if user_answer is not None else user_answers
     }
@@ -280,8 +305,18 @@ if st.session_state.answered:
         correct_count = last_result.get("correct_count", 0)
         total_correct = last_result.get("total_correct", 0)
 
-        if last_result["status"] == "correct":
-            st.success(f"✅ Correct! You selected all {total_correct} answers.")
+        over_selected = last_result.get("over_selected", False)
+        max_selections = last_result.get("max_selections", total_correct)
+
+        # Special user-friendly message
+        if over_selected:
+            st.error(
+                "Oops! Try again.\n\n"
+            f"Only {max_selections} of these items are needed for this experiment."
+            )
+        
+        elif last_result["status"] == "correct":
+            st.success(f"✅ Correct! You selected all {max_selections} required items.")
         elif last_result["status"] == "partial":
             st.warning(
                 f"Nearly correct! ⚠️ You got {correct_count} out of {total_correct} correct."
