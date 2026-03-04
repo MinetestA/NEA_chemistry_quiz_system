@@ -52,8 +52,16 @@
     "image": null,
     "video": null
   },
-  "choices": ["NaOH - 2 mol/dm³", "Liebig condenser", "Thermometer", "Dropper", "250 cm³ beaker", "Safety goggles", "Conical flask", "Measuring cylinder", "HCl - 2 mol/dm³", "Insulating cup"],
-  "correct_indices": [0, 2, 4, 5, 7, 8, 9],
+  "choices": ["NaOH - 2 mol/dm³",
+      "Liebig condenser", "Thermometer",
+      "Dropper", "250 cm³ beaker",
+      "Safety goggles", "Conical flask",
+      "Measuring cylinder", "HCl - 2 mol/dm³", "Insulating cup"
+  ],
+ "answer": [
+    "NaOH - 2 mol/dm³","Thermometer","250 cm³ beaker","Safety goggles",
+    "Measuring cylinder","HCl - 2 mol/dm³","Insulating cup"
+  ],
   "explanation": "You need NaOH, HCl, a thermometer, a 250 cm³ beaker, a conical flask, a measuring cylinder, and an insulating cup for this experiment. Watch the video for more details."
 },
 {
