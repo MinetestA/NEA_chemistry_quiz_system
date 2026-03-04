@@ -61,8 +61,39 @@ def initialise_state(st):
         if key not in st:
             st[key] = value
 
-def mark_checkbox(user_answers, correct_indices):
-    return set(user_answers) == set(correct_indices)
+
+def mark_checkbox(user_answer, correct_answers, tolerance):
+    # Defensive: ensure correct_answers is a list
+    if isinstance(correct_answers, str):
+        correct_answers = [correct_answers]
+
+    #Defensive: handle empty selections safely
+    if user_answer is None:
+        user_answer = []
+
+    user_set = set(user_answer)
+    correct_set = set(correct_answers)
+
+    correct_selected = len(user_set & correct_set)
+    incorrect_selected = len(user_set - correct_set)
+
+    total_correct = len(correct_set)
+
+    if total_correct == 0:
+        return "incorrect", 0, 0
+
+    # Proportion correct, penalising wrong selections
+    net_score = correct_selected - incorrect_selected
+    proportion = max(0, net_score) / total_correct
+
+    if proportion == 1.0 and incorrect_selected == 0:
+        return "correct", correct_selected, total_correct
+
+    elif proportion >= tolerance:
+        return "partial", correct_selected, total_correct
+
+    else:
+        return "incorrect", correct_selected, total_correct
 
 
 def mark_fill_blank(user_inputs, correct_words):
