@@ -15,19 +15,25 @@
     "explanation": "Increasing temperature gives particles more kinetic energy, leading to more frequent and energetic collisions."
 },
 {
-    "id": 1,
-    "type": "numerical",
-    "prompt": "Calculate the concentration of the solution (mol/dm³). You have 0.5 moles of NaOH dissolved in 2 dm³ of solution.",
-    "media": {
-      "image": null,
-      "video": null
-    },
-    "answer": {
-      "value": 0.25,
-      "tolerance": 0.02
-    },
-    "explanation": "Concentration = moles divided by volume."
+     {
+  "id": 1,
+  "type": "checkbox",
+  "prompt": "Which of these do you need for this experiment? \nThere are 7 correct items.",
+  "media": {
+    "image": null,
+    "video": null
   },
+   "choices": ["NaOH - 2 mol/dm³", "Liebig condenser", "Thermometer", 
+    "Dropper", "250 cm³ beaker", "Safety goggles", "Conical flask", 
+    "Measuring cylinder", "HCl - 2 mol/dm³", "Insulating cup"
+  ],
+  "answer": [
+    "NaOH - 2 mol/dm³","Thermometer","250 cm³ beaker","Safety goggles",
+    "Measuring cylinder","HCl - 2 mol/dm³","Insulating cup"
+  ],
+  "max_selections": 7,
+  "explanation": "You need NaOH, HCl, a thermometer, a 250 cm³ beaker, a conical flask, a measuring cylinder, and an insulating cup for this experiment. Watch the video for more details."
+},
   {
     "id": 2,
     "type": "radio",
@@ -45,25 +51,19 @@
     "explanation": "Exothermic reactions release energy to the surroundings."
   },
   {
-  "id": 3,
-  "type": "checkbox",
-  "prompt": "Which of these do you need for this experiment?",
-  "media": {
-    "image": null,
-    "video": null
+    "id": 3,
+    "type": "numerical",
+    "prompt": "Calculate the concentration of the solution (mol/dm³). You have 0.5 moles of NaOH dissolved in 2 dm³ of solution.",
+    "media": {
+      "image": null,
+      "video": null
+    },
+    "answer": {
+      "value": 0.25,
+      "tolerance": 0.02
+    },
+    "explanation": "Concentration = moles divided by volume."
   },
-  "choices": ["NaOH - 2 mol/dm³",
-      "Liebig condenser", "Thermometer",
-      "Dropper", "250 cm³ beaker",
-      "Safety goggles", "Conical flask",
-      "Measuring cylinder", "HCl - 2 mol/dm³", "Insulating cup"
-  ],
- "answer": [
-    "NaOH - 2 mol/dm³","Thermometer","250 cm³ beaker","Safety goggles",
-    "Measuring cylinder","HCl - 2 mol/dm³","Insulating cup"
-  ],
-  "explanation": "You need NaOH, HCl, a thermometer, a 250 cm³ beaker, a conical flask, a measuring cylinder, and an insulating cup for this experiment. Watch the video for more details."
-},
 {
   "id": 4,
   "type": "fill_blank",
