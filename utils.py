@@ -62,12 +62,19 @@ def initialise_state(st):
             st[key] = value
 
 
-def mark_checkbox(user_answer, correct_answers, tolerance):
+def mark_checkbox(user_answer, correct_answers, tolerance=0.8, max_selections=None):
+    """
+    Checkbox marking with:
+    - Over-selection detection
+    - Partial credit tolerance
+    - Dynamic max selections per question
+    """
+
     # Defensive: ensure correct_answers is a list
     if isinstance(correct_answers, str):
         correct_answers = [correct_answers]
 
-    #Defensive: handle empty selections safely
+    # Defensive: handle empty selections safely
     if user_answer is None:
         user_answer = []
 
@@ -75,26 +82,32 @@ def mark_checkbox(user_answer, correct_answers, tolerance):
     correct_set = set(correct_answers)
 
     correct_selected = len(user_set & correct_set)
-    incorrect_selected = len(user_set - correct_set)
-
     total_correct = len(correct_set)
 
+    # Default max_selections = number of correct answers
+    if max_selections is None:
+        max_selections = total_correct
+
+    # Prevent division errors
     if total_correct == 0:
-        return "incorrect", 0, 0
+        return "incorrect", 0, 0, False, max_selections
 
-    # Proportion correct, penalising wrong selections
-    net_score = correct_selected - incorrect_selected
-    proportion = max(0, net_score) / total_correct
+    # Detect over-selection (ticking too many)
+    over_selected = len(user_set) > max_selections
 
-    if proportion == 1.0 and incorrect_selected == 0:
-        return "correct", correct_selected, total_correct
+    proportion = correct_selected / total_correct
 
-    elif proportion >= tolerance:
-        return "partial", correct_selected, total_correct
+    # Full correct only if exactly correct answers chosen
+    if proportion == 1.0 and len(user_set) == max_selections:
+        return "correct", correct_selected, total_correct, over_selected, max_selections
 
+    # Nearly correct if above tolerance (and not over-selected)
+    elif proportion >= tolerance and not over_selected:
+        return "partial", correct_selected, total_correct, over_selected, max_selections
+
+    # Otherwise incorrect
     else:
-        return "incorrect", correct_selected, total_correct
-
+        return "incorrect", correct_selected, total_correct, over_selected, max_selections
 
 def mark_fill_blank(user_inputs, correct_words):
     correct_count = 0
