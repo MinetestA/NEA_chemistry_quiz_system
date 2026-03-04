@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import streamlit as st
 
@@ -55,7 +56,9 @@ def initialise_state(st):
         "answered": False,
         "last_result": None,
         "advance_question": False,
-        "current_qid": None
+        "current_qid": None,
+        "completed_qids": set(),
+        "results_by_qid": {}
     }
     for key, value in defaults.items():
         if key not in st:
